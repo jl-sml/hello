@@ -56,14 +56,51 @@
             escape: /\{\{\-([\s\S]+?)\}\}/g,         // {{- title }}
             variable: "o"
         }
-        let tplFuncs = {};
+        let tplFuncs = {  };
         $('#tpls > script[type="text/template"]').each(function (i, o) {
             tplFuncs[$(o).attr("name")] = _.template(o.innerText);
         });
         console.log(tplFuncs.tplDummy({k1: "bar"}));
 
         $("#btnGo").click(function(){
-          console.log("yo");
+          let accid = $("#txtAcc").val();
+          let txtUsr = $("#txtUsr").val();
+          let txtPwd = $("#txtPwd").val();
+          
+          const _HostName_ = "api.boomi.com";
+          const _APIBase_ = "/api/rest/v1";
+          
+          let resPath = '/ComponentMetadata/query';
+          let from="2023-07-21", to="2023-07-28", by="jacklee@sml.com";
+          let requestBody = {
+              "QueryFilter": {
+                  "expression": {
+                      "operator":"and",
+                      "nestedExpression": [
+                          {"property":"modifiedBy", "operator":"EQUALS", "argument": [by]},
+                          {"property":"modifiedDate", "operator":"BETWEEN", "argument": [`${from}T00:00:00Z`,`${to}T00:00:00Z`]},
+                      ]
+                  }
+              }
+          }
+          
+          let postData = requestBody===undefined ? "" : JSON.stringify(requestBody);
+          
+          const requestOptions = {
+            method: 'POST',
+            headers: { 
+              "Authorization" : `Basic ${btoa(`${txtUsr}:${txtPwd}`)}`,
+              'Content-Type': 'application/json',
+              'Content-Length': postData.length,
+              
+              'Accept': 'application/json',
+            },
+            body: postData
+          };
+          fetch(`${_APIBase_}/${accid}${resPath}`, requestOptions)
+            .then(response => response.json())
+            .then(data => console.log(data) );
+
         });
       })(MyApp);
     </script>
