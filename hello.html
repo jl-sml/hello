@@ -88,6 +88,7 @@
           
           const requestOptions = {
             method: 'POST',
+            mode: 'cors',
             headers: { 
               "Authorization" : `Basic ${btoa(`${txtUsr}:${txtPwd}`)}`,
               'Content-Type': 'application/json',
@@ -97,7 +98,7 @@
             },
             body: postData
           };
-          fetch(`${_APIBase_}/${accid}${resPath}`, requestOptions)
+          fetch(`https://${_HostName_}/${_APIBase_}/${accid}${resPath}`, requestOptions)
             .then(response => response.json())
             .then(data => console.log(data) );
 
