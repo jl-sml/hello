@@ -25,6 +25,14 @@
             background-color: green;
         }
     </style>
+
+    <!--templates -->
+    <div id="tpls">
+        <script type="text/template" name="tplDummy">
+            <div>{{-o.k1}}</div>
+        </script>
+    </div>
+
     
     <!--UI-->
     <h6>Hello</h6>
@@ -40,8 +48,23 @@
 
 
     <!--app logic 0-->
-    <script>
-      console.log("yo");
+    <script type="text/javascript">
+      var MyApp = MyApp || {};
+      (async function (app, undefined) {
+        _.templateSettings = {
+            evaluate: /\{\{([\s\S]+?)\}\}/g,            // {{ console.log("blah") }}
+            interpolate: /\{\{\=([\s\S]+?)\}\}/g,  // {{= title }}
+            escape: /\{\{\-([\s\S]+?)\}\}/g,         // {{- title }}
+            variable: "o"
+        }
+        let tplFuncs = {};
+        $('#tpls > script[type="text/template"]').each(function (i, o) {
+            tplFuncs[$(o).attr("name")] = _.template(o.innerText);
+        });
+
+        console.log(tplFuncs.tplDummy({k1: "bar"}));
+        
+      })(MyApp);
     </script>
 </html>
 
